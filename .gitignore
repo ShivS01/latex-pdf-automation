@@ -9,3 +9,4 @@ misc*
 pdf/
 *.zip
 credential.py
+__pycache__

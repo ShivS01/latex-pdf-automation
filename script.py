@@ -2,10 +2,6 @@ import fire
 import subprocess
 import os
 import shutil
-import json
-from email.message import EmailMessage
-from credential import EMAIL_ADDRESS, EMAIL_PASSWORD
-import smtplib
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
@@ -280,43 +276,3 @@ def createOne(sapid="0000"):
 
 if __name__ == "__main__":
     fire.Fire()
-
-
-# Sending Email
-docs = db.collection_group("students").get()
-for doc in docs:
-    email01 = doc.to_dict()["email"]
-    name01 = doc.to_dict()["firstName"]
-
-    msg = EmailMessage()
-    msg["Subject"] = "CV"
-    msg["From"] = EMAIL_ADDRESS
-    # msg['To'] = email01
-    msg["To"] = "ritish20mohapatra@gmail.com"
-    msg.set_content("Your CV is Here:")
-
-    msg.add_alternative(
-        """\
-		<!DOCTYPE html>
-		<html>
-			<body>
-				<h3 >Here's your generated CV.
-            Regards, 
-            Placement committee, STME NMIMS Navi Mumba</h3>
-			</body>
-		</html>    
-		""",
-        subtype="html",
-    )
-
-    with open(f"pdf/{name01}.pdf", "rb") as f:
-        file_data = f.read()
-        file_name = f.name
-
-    msg.add_attachment(
-        file_data, maintype="application", subtype="octet-stream", filename=file_name
-    )
-
-    # with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
-    #     smtp.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
-    #     smtp.send_message(msg)
